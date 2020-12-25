@@ -29,6 +29,18 @@ export function Main() {
 	const [ARG_DV, setARG_DV] = useState<NumberDV>({});
 	const [ST_DV, setST_DV] = useState<NumberDV>({});
 
+
+	const push = (x : number) => {
+		ST_DV[SP] = x;
+		setST_DV(ST_DV);
+		setSP(SP + 1);
+	}
+
+	const pop = () : number => {
+		setSP(SP - 1);
+		return ST_DV[SP - 1]
+	}
+
 	const load = () => {
 		const obj = JSON.parse(bytesInput);
 		setOPC_DV(obj['code'].map((e : any) => mnemonic[e['Inst']['opc']]));
@@ -43,9 +55,11 @@ export function Main() {
 
 		switch (opc) {
 			case "PUSH":
-			break;
+				push(arg);
+				break;
 			case "POP":
-			break;
+				pop();
+				break;
 			case "JUMP":
 			break;
 			case "JIF0":
@@ -96,7 +110,7 @@ export function Main() {
 			break;
 			case "ATAN":
 			break;
-			case "ATAN":
+			case "ATAN2":
 			break;
 			case "ROOT":
 			break;
@@ -203,6 +217,7 @@ export function Main() {
 			<textarea value={bytesInput} onChange={(e) => setBytesInput(e.target.value)} />
 			<button onClick={load}>load</button>
 			<button onClick={tick}>tick</button>
+
 		</div>
 	);
 };
