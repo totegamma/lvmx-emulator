@@ -21,189 +21,345 @@ export function Main() {
 
 	let mnemonic : MnemonicDict = mnemonicjson;
 
-	const [PC, setPC] = useState(0);
-	const [SP, setSP] = useState(0);
-	const [FP, setFP] = useState(0);
+	let [STATUS, setSTATUS] = useState(0);
 
-	const [OPC_DV, setOPC_DV] = useState<StringDV>({});
-	const [ARG_DV, setARG_DV] = useState<NumberDV>({});
-	const [ST_DV, setST_DV] = useState<NumberDV>({});
+	let [PC, setPC] = useState(0);
+	let [SP, setSP] = useState(0);
+	let [FP, setFP] = useState(0);
+
+	let [OPC_DV, setOPC_DV] = useState<StringDV>({});
+	let [ARG_DV, setARG_DV] = useState<NumberDV>({});
+	let [ST_DV, setST_DV] = useState<NumberDV>({});
+
+	let [REG_DV, setREG_DV] = useState<NumberDV>({});
 
 
 	const push = (x : number) => {
 		ST_DV[SP] = x;
 		setST_DV(ST_DV);
-		setSP(SP + 1);
+		setSP(++SP);
 	}
 
 	const pop = () : number => {
-		setSP(SP - 1);
-		return ST_DV[SP - 1]
+		setSP(--SP);
+		return ST_DV[SP]
+	}
+
+	const start = () => {
+		while (STATUS === 1) {
+			tick();
+		}
 	}
 
 	const load = () => {
 		const obj = JSON.parse(bytesInput);
-		setOPC_DV(obj['code'].map((e : any) => mnemonic[e['Inst']['opc']]));
-		setARG_DV(obj['code'].map((e : any) => e['Inst']['arg']));
+		setOPC_DV(obj['code'].map((e : any) => mnemonic[e['opc']]));
+		setARG_DV(obj['code'].map((e : any) => e['arg']));
 		setST_DV(obj['data'])
+		setFP(obj['data'].length);
 		setSP(obj['data'].length);
+		setSTATUS(1);
 	}
 
 	const tick = () => {
 		var opc = OPC_DV[PC]
 		var arg = ARG_DV[PC]
 
+		var bufA;
+		var bufB;
+
 		switch (opc) {
 			case "PUSH":
 				push(arg);
+				setPC(++PC)
 				break;
+
 			case "POP":
 				pop();
+				setPC(++PC)
 				break;
+
 			case "JUMP":
-			break;
+				setPC(arg)
+				break;
+
 			case "JIF0":
-			break;
+				bufA = pop();
+				if (bufA === 0) {
+					setPC(arg);
+				} else {
+					setPC(++PC);
+				}
+				break;
+
 			case "FRAME":
-			break;
+				push(FP)
+				setFP(SP - 1);
+				for (let i = 0; i < arg; i++) {
+					push(0);
+				}
+				setPC(++PC);
+				break;
+
 			case "POPR":
-			break;
+				bufA = pop();
+				for (let i = 0; i < arg; i++) {
+					pop();
+				}
+				push(bufA);
+				setPC(++PC);
+				break;
+
 			case "CALL":
-			break;
+				push(++PC);
+				setPC(PC = arg);
+				break;
+
 			case "RET":
-			break;
+				bufA = pop();
+				bufB = SP - FP - 1;
+				for (let i = 0; i < bufB; i++) {
+					pop();
+				}
+				setFP(FP = pop());
+				setPC(PC = pop());
+
+				if (PC === 0) {
+					pop();
+					push(0);
+					push(0);
+					setSTATUS(STATUS = 0);
+				} else {
+					push(bufA);
+				}
+
+				break;
+
 			case "PULP":
-			break;
+				push(FP + arg + 1);
+				setPC(++PC);
+				break;
+
 			case "PUAP":
-			break;
+				push(FP - arg - 2);
+				setPC(++PC);
+				break;
 
 			case "LOADG":
-			break;
+				push(ST_DV[arg])
+				setPC(++PC);
+				break;
+
 			case "LOADL":
-			break;
+				push(ST_DV[FP + arg + 1])
+				setPC(++PC);
+				break;
+
 			case "LOADA":
-			break;
+				push(ST_DV[FP - arg - 2])
+				setPC(++PC);
+				break;
+
 			case "LOADR":
-			break;
+				push(REG_DV[arg])
+				setPC(++PC);
+				break;
+
 			case "LOADP":
-			break;
+				bufA = pop();
+				push(ST_DV[bufA]);
+				setPC(++PC);
+				break;
+
 			case "STOREG":
-			break;
+				ST_DV[arg] = pop();
+				setST_DV(ST_DV);
+				setPC(++PC);
+				break;
+
 			case "STOREL":
-			break;
+				ST_DV[FP + arg + 1] = pop();
+				setST_DV(ST_DV);
+				setPC(++PC);
+				break;
+
 			case "STOREA":
-			break;
+				ST_DV[FP - arg - 2] = pop();
+				setST_DV(ST_DV);
+				setPC(++PC);
+				break;
+
 			case "STORER":
-			break;
+				REG_DV[arg] = pop();
+				setREG_DV(REG_DV);
+				setPC(++PC);
+				break;
+
 			case "STOREP":
-			break;
+				bufA = pop();
+				bufB = pop();
+				ST_DV[bufA] = bufB;
+				setST_DV(ST_DV);
+				setPC(++PC);
+				break;
 
 			case "SIN":
-			break;
+				bufA = pop();
+				push(Math.sin(bufA));
+				setPC(++PC);
+				break;
+
 			case "COS":
-			break;
+				bufA = pop();
+				push(Math.cos(bufA));
+				setPC(++PC);
+				break;
+
 			case "TAN":
-			break;
+				setSTATUS(0);
+				break;
 			case "ASIN":
-			break;
+				setSTATUS(0);
+				break;
 			case "ACOS":
-			break;
+				setSTATUS(0);
+				break;
 			case "ATAN":
-			break;
+				setSTATUS(0);
+				break;
 			case "ATAN2":
-			break;
+				setSTATUS(0);
+				break;
 			case "ROOT":
-			break;
+				setSTATUS(0);
+				break;
 			case "POW":
-			break;
+				setSTATUS(0);
+				break;
 			case "LOG":
-			break;
+				setSTATUS(0);
+				break;
 
 			case "ADDU":
-			break;
-			case "SUBU":
-			break;
-			case "MULU":
-			break;
-			case "DIVU":
-			break;
-			case "MODU":
-			break;
-			case "LTU":
-			break;
-			case "LTEU":
-			break;
-			case "GTU":
-			break;
-			case "GTEU":
-			break;
-			case "EQU":
-			break;
-			case "NEQU":
-			break;
-			case "UTOI":
-			break;
-			case "UTOF":
-			break;
-
 			case "ADDI":
-			break;
-			case "SUBI":
-			break;
-			case "MULI":
-			break;
-			case "DIVI":
-			break;
-			case "MODI":
-			break;
-			case "LTI":
-			break;
-			case "LTEI":
-			break;
-			case "GTI":
-			break;
-			case "GTEI":
-			break;
-			case "EQI":
-			break;
-			case "NEQI":
-			break;
-			case "ITOF":
-			break;
-			case "ITOU":
-			break;
-
 			case "ADDF":
-			break;
+				bufB = pop();
+				bufA = pop();
+				push(bufA + bufB);
+				setPC(++PC);
+				break;
+
+			case "SUBU":
+			case "SUBI":
 			case "SUBF":
-			break;
+				bufB = pop();
+				bufA = pop();
+				push(bufA - bufB);
+				setPC(++PC);
+				break;
+
+			case "MULU":
+			case "MULI":
 			case "MULF":
-			break;
+				bufB = pop();
+				bufA = pop();
+				push(bufA * bufB);
+				setPC(++PC);
+				break;
+
+			case "DIVU":
+			case "DIVI":
 			case "DIVF":
-			break;
+				bufB = pop();
+				bufA = pop();
+				push(bufA / bufB);
+				setPC(++PC);
+				break;
+
+			case "MODU":
+			case "MODI":
 			case "MODF":
-			break;
+				bufB = pop();
+				bufA = pop();
+				push(bufA % bufB);
+				setPC(++PC);
+				break;
+
+			case "LTU":
+			case "LTI":
 			case "LTF":
-			break;
+				bufB = pop();
+				bufA = pop();
+				push(bufA < bufB ? 1 : 0);
+				setPC(++PC);
+				break;
+
+			case "LTEU":
+			case "LTEI":
 			case "LTEF":
-			break;
+				bufB = pop();
+				bufA = pop();
+				push(bufA < bufB ? 1 : 0);
+				setPC(++PC);
+				break;
+
+			case "GTU":
+			case "GTI":
 			case "GTF":
-			break;
+				bufB = pop();
+				bufA = pop();
+				push(bufA < bufB ? 1 : 0);
+				setPC(++PC);
+				break;
+
+			case "GTEU":
+			case "GTEI":
 			case "GTEF":
-			break;
+				bufB = pop();
+				bufA = pop();
+				push(bufA < bufB ? 1 : 0);
+				setPC(++PC);
+				break;
+
+			case "EQU":
+			case "EQI":
 			case "EQF":
-			break;
+				bufB = pop();
+				bufA = pop();
+				push(bufA < bufB ? 1 : 0);
+				setPC(++PC);
+				break;
+
+			case "NEQU":
+			case "NEQI":
 			case "NEQF":
-			break;
+				bufB = pop();
+				bufA = pop();
+				push(bufA < bufB ? 1 : 0);
+				setPC(++PC);
+				break;
+
+
+			case "UTOI":
+				break;
+			case "UTOF":
+				break;
+			case "ITOF":
+				break;
+			case "ITOU":
+				break;
 			case "FTOU":
-			break;
+				break;
 			case "FTOI":
-			break;
+				break;
+			default:
+				setSTATUS(0);
+				break;
 
 		}
-		console.log(opc + ':' + arg)
+		console.log(opc + ':' + arg);
+		console.log(ST_DV);
 
-		setPC(PC + 1)
 	}
 
 
@@ -214,9 +370,11 @@ export function Main() {
 				<li>SP: {SP}</li>
 				<li>FP: {FP}</li>
 			</ul>
+			<div>status: {STATUS}</div>
 			<textarea value={bytesInput} onChange={(e) => setBytesInput(e.target.value)} />
 			<button onClick={load}>load</button>
 			<button onClick={tick}>tick</button>
+			<button onClick={start}>start</button>
 
 		</div>
 	);
