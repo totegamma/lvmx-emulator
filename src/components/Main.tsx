@@ -216,28 +216,28 @@ export function Main() {
 				break;
 
 			case "TAN":
-				setSTATUS(0);
+				setSTATUS(STATUS = 0);
 				break;
 			case "ASIN":
-				setSTATUS(0);
+				setSTATUS(STATUS = 0);
 				break;
 			case "ACOS":
-				setSTATUS(0);
+				setSTATUS(STATUS = 0);
 				break;
 			case "ATAN":
-				setSTATUS(0);
+				setSTATUS(STATUS = 0);
 				break;
 			case "ATAN2":
-				setSTATUS(0);
+				setSTATUS(STATUS = 0);
 				break;
 			case "ROOT":
-				setSTATUS(0);
+				setSTATUS(STATUS = 0);
 				break;
 			case "POW":
-				setSTATUS(0);
+				setSTATUS(STATUS = 0);
 				break;
 			case "LOG":
-				setSTATUS(0);
+				setSTATUS(STATUS = 0);
 				break;
 
 			case "ADDU":
@@ -341,17 +341,35 @@ export function Main() {
 
 
 			case "UTOI":
+				setPC(++PC);
 				break;
+
 			case "UTOF":
+				setPC(++PC);
 				break;
+
 			case "ITOF":
+				setPC(++PC);
 				break;
+
 			case "ITOU":
+				bufA = pop();
+				push(Math.abs(bufA));
+				setPC(++PC);
 				break;
+
 			case "FTOU":
+				bufA = pop();
+				push(Math.floor(bufA));
+				setPC(++PC);
 				break;
+
 			case "FTOI":
+				bufA = pop();
+				push(Math.floor(bufA));
+				setPC(++PC);
 				break;
+
 			default:
 				setSTATUS(0);
 				break;
