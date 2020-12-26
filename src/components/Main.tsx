@@ -80,13 +80,13 @@ export function Main() {
 				break;
 
 			case "JUMP":
-				setPC(arg)
+				setPC(PC = arg)
 				break;
 
 			case "JIF0":
 				bufA = pop();
 				if (bufA === 0) {
-					setPC(arg);
+					setPC(PC = arg);
 				} else {
 					setPC(++PC);
 				}
@@ -243,8 +243,8 @@ export function Main() {
 			case "ADDU":
 			case "ADDI":
 			case "ADDF":
-				bufB = pop();
 				bufA = pop();
+				bufB = pop();
 				push(bufA + bufB);
 				setPC(++PC);
 				break;
@@ -252,8 +252,8 @@ export function Main() {
 			case "SUBU":
 			case "SUBI":
 			case "SUBF":
-				bufB = pop();
 				bufA = pop();
+				bufB = pop();
 				push(bufA - bufB);
 				setPC(++PC);
 				break;
@@ -261,8 +261,8 @@ export function Main() {
 			case "MULU":
 			case "MULI":
 			case "MULF":
-				bufB = pop();
 				bufA = pop();
+				bufB = pop();
 				push(bufA * bufB);
 				setPC(++PC);
 				break;
@@ -270,8 +270,8 @@ export function Main() {
 			case "DIVU":
 			case "DIVI":
 			case "DIVF":
-				bufB = pop();
 				bufA = pop();
+				bufB = pop();
 				push(bufA / bufB);
 				setPC(++PC);
 				break;
@@ -279,8 +279,8 @@ export function Main() {
 			case "MODU":
 			case "MODI":
 			case "MODF":
-				bufB = pop();
 				bufA = pop();
+				bufB = pop();
 				push(bufA % bufB);
 				setPC(++PC);
 				break;
@@ -288,8 +288,8 @@ export function Main() {
 			case "LTU":
 			case "LTI":
 			case "LTF":
-				bufB = pop();
 				bufA = pop();
+				bufB = pop();
 				push(bufA < bufB ? 1 : 0);
 				setPC(++PC);
 				break;
@@ -297,8 +297,8 @@ export function Main() {
 			case "LTEU":
 			case "LTEI":
 			case "LTEF":
-				bufB = pop();
 				bufA = pop();
+				bufB = pop();
 				push(bufA < bufB ? 1 : 0);
 				setPC(++PC);
 				break;
@@ -306,8 +306,8 @@ export function Main() {
 			case "GTU":
 			case "GTI":
 			case "GTF":
-				bufB = pop();
 				bufA = pop();
+				bufB = pop();
 				push(bufA < bufB ? 1 : 0);
 				setPC(++PC);
 				break;
@@ -315,8 +315,8 @@ export function Main() {
 			case "GTEU":
 			case "GTEI":
 			case "GTEF":
-				bufB = pop();
 				bufA = pop();
+				bufB = pop();
 				push(bufA < bufB ? 1 : 0);
 				setPC(++PC);
 				break;
@@ -324,8 +324,8 @@ export function Main() {
 			case "EQU":
 			case "EQI":
 			case "EQF":
-				bufB = pop();
 				bufA = pop();
+				bufB = pop();
 				push(bufA < bufB ? 1 : 0);
 				setPC(++PC);
 				break;
@@ -333,8 +333,8 @@ export function Main() {
 			case "NEQU":
 			case "NEQI":
 			case "NEQF":
-				bufB = pop();
 				bufA = pop();
+				bufB = pop();
 				push(bufA < bufB ? 1 : 0);
 				setPC(++PC);
 				break;
