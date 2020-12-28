@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
 
-import mnemonicjson from './mnemonic.json';
-
-
-interface MnemonicDict {
-	[Key: string]: string;
-}
 
 interface StringDV {
 	[Key: number]: string;
@@ -18,8 +12,6 @@ interface NumberDV {
 export function Main() {
 
 	const [bytesInput, setBytesInput] = useState("");
-
-	let mnemonic : MnemonicDict = mnemonicjson;
 
 	let [STATUS, setSTATUS] = useState(0);
 
@@ -53,7 +45,7 @@ export function Main() {
 
 	const load = () => {
 		const obj = JSON.parse(bytesInput);
-		setOPC_DV(obj['code'].map((e : any) => mnemonic[e['opc']]));
+		setOPC_DV(obj['code'].map((e : any) => e['opc']));
 		setARG_DV(obj['code'].map((e : any) => e['arg']));
 		setST_DV(obj['data'])
 		setFP(obj['data'].length);
