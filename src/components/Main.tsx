@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Button, ButtonGroup, List, ListItem, ListItemText, TextField } from '@material-ui/core';
+import { UIX_RENDER_PROP, UIX_RENDERER, UIX, UIX_TEXT } from './UIX';
 
 interface StringDV {
 	[Key: number]: string;
@@ -8,67 +9,6 @@ interface StringDV {
 interface NumberDV {
 	[Key: number]: number;
 }
-
-interface UIX_RENDER_PROP {
-	onchange: number;
-	root: UIX;
-}
-
-function UIX_RENDERER(prop: UIX_RENDER_PROP) {
-	return (
-		<div>
-			{prop.root.render()}
-		</div>
-	)
-}
-
-class UIX {
-
-	strdv: { [key: string]: string; } = {};
-	numdv: { [key: string]: number; } = {};
-
-	childs: UIX[] = [];
-
-	render() {
-		return (
-			<div>
-				{this.childs.map((elem, index) => <div key={index}>{elem.render()}</div>)}
-			</div>
-		)
-	}
-
-	setStrDV(key: string, value: string) {
-		this.strdv[key] = value;
-	}
-
-	setNumDV(key: string, value: number) {
-		this.numdv[key] = value;
-	}
-
-
-	addChild(child: UIX) {
-		this.childs.push(child);
-	}
-
-}
-
-class UIX_TEXT extends UIX {
-
-	constructor() {
-		super()
-		this.strdv["text"] = "testtext"
-	}
-
-	render() {
-		return (
-			<div>
-				<div>{this.strdv["text"]}</div>
-			</div>
-		)
-	}
-
-}
-
 
 export function Main() {
 
