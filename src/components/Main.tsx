@@ -10,6 +10,10 @@ interface NumberDV {
 	[Key: number]: number;
 }
 
+interface SlotDV {
+	[Key: number]: UIX;
+}
+
 export function Main() {
 
 	const [bytesInput, setBytesInput] = useState("");
@@ -26,6 +30,8 @@ export function Main() {
 	let [OPC_DV, setOPC_DV] = useState<StringDV>({});
 	let [ARG_DV, setARG_DV] = useState<NumberDV>({});
 	let [ST_DV, setST_DV] = useState<NumberDV>({});
+
+	let [SLOT_DV, setSLOT_DV] = useState<SlotDV>({});
 
 	let [REG_DV, setREG_DV] = useState<NumberDV>({});
 	let [UIXProp, setUIXProp] = useState<UIX_RENDER_PROP>({
@@ -59,12 +65,18 @@ export function Main() {
 		setSP(obj['data'].length);
 		setSTATUS(1);
 
-		let a = new UIX_TEXT();
-		a.setStrDV("text", "HELLO WORLD!");
-		UIXProp.root.addChild(a);
-		UIXProp.onchange = Math.random();
-		setUIXProp(UIXProp);
+		SLOT_DV[Object.keys(SLOT_DV).length] = UIXProp.root;
+		setSLOT_DV(SLOT_DV);
+	}
 
+	const readNullTermStr = (addr : number) : string => {
+		var buff = "";
+		var tmp = 0;
+		while ((tmp = ST_DV[addr++]) !== 0) {
+			buff += String.fromCharCode(tmp);
+		}
+
+		return buff;
 	}
 
 	const tick = () => {
@@ -160,11 +172,7 @@ export function Main() {
 
 			case "PRINT":
 				bufA = pop();
-				var buff = "";
-				var tmp = 0;
-				while ((tmp = ST_DV[bufA++]) !== 0) {
-					buff += String.fromCharCode(tmp);
-				}
+				let buff = readNullTermStr(bufA);
 				setLog(Log += buff);
 				setPC(++PC);
 				break;
@@ -394,11 +402,81 @@ export function Main() {
 				setPC(++PC);
 				break;
 
+			case "REDDU":
+				break;
+
+			case "REDDI":
+				break;
+
+			case "REDDF":
+				break;
+
+			case "REDDS":
+				break;
+
+			case "WRIDU":
+				break;
+
+			case "WRIDI":
+				break;
+
+			case "WRIDF":
+				break;
+
+			case "WRIDS":
+				bufA = pop(); // slot
+				bufB = pop(); // key
+				let bufC = pop(); // content
+				let key = readNullTermStr(bufB);
+				let data = readNullTermStr(bufC);
+				SLOT_DV[bufA].setStrDV(key, data);
+				UIXProp.onchange = Math.random();
+				setUIXProp(UIXProp);
+				setPC(++PC);
+				break;
+
+			case "CSFT":
+				bufA = pop();
+				let name = readNullTermStr(bufA);
+				let newID = Object.keys(SLOT_DV).length
+				switch (name){
+					case "uix":
+						SLOT_DV[newID] = new UIX();
+						break;
+
+					case "uix_text":
+						SLOT_DV[newID] = new UIX_TEXT();
+						break;
+					default:
+						setLog(Log += "unknown template error!");
+						newID = -1;
+						break;
+					}
+				setSLOT_DV(SLOT_DV);
+				push(newID);
+				setPC(++PC);
+				break;
+
+			case "SSPA":
+				bufA = pop();
+				bufB = pop();
+				SLOT_DV[bufB].addChild(SLOT_DV[bufA])
+				UIXProp.onchange = Math.random();
+				setUIXProp(UIXProp);
+				setPC(++PC);
+				break;
+
+			case "DS":
+				break;
+
+
 			default:
 				setSTATUS(0);
 				break;
 
 		}
+		console.log(opc + ':' + arg);
+		console.log(ST_DV);
 		setCLOCK(++CLOCK);
 	}
 
