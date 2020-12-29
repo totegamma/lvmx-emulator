@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import {Box, Button, ButtonGroup, List, ListItem, ListItemText, TextField} from '@material-ui/core';
-
+import { Box, Button, ButtonGroup, List, ListItem, ListItemText, TextField } from '@material-ui/core';
 
 interface StringDV {
 	[Key: number]: string;
@@ -9,6 +8,51 @@ interface StringDV {
 interface NumberDV {
 	[Key: number]: number;
 }
+
+
+class UIX extends React.Component {
+
+	strdv: { [key: string]: string; } = {};
+	numdv: { [key: string]: number; } = {};
+
+	constructor(props : any) {
+		super(props)
+	}
+
+	render() {
+		return (
+			<div>{this.props.children}</div>
+		)
+	}
+
+	setStrDV(key: string, value: string) {
+		this.strdv[key] = value;
+	}
+
+	setNumDV(key: string, value: number) {
+		this.numdv[key] = value;
+	}
+
+}
+
+class UIX_TEXT extends UIX {
+
+	constructor(props : any) {
+		super(props)
+		this.strdv["text"] = "testtext"
+	}
+
+	render() {
+		return (
+			<div>
+				<div>{this.strdv["text"]}</div>
+				<div>{this.props.children}</div>
+			</div>
+		)
+	}
+
+}
+
 
 export function Main() {
 
@@ -28,6 +72,8 @@ export function Main() {
 	let [ST_DV, setST_DV] = useState<NumberDV>({});
 
 	let [REG_DV, setREG_DV] = useState<NumberDV>({});
+
+	let RootSlot = React.createRef<UIX>();
 
 
 	const push = (x : number) => {
@@ -55,6 +101,15 @@ export function Main() {
 		setFP(obj['data'].length);
 		setSP(obj['data'].length);
 		setSTATUS(1);
+
+		/*
+		if (RootSlot.current !== null) {
+			let a = new UIX_TEXT(0);
+			a.setStrDV("text", "HELLO WORLD!");
+			RootSlot.current.addChild(a);
+		}
+		 */
+
 	}
 
 	const tick = () => {
@@ -403,6 +458,7 @@ export function Main() {
 			<Box id="EmulatorView">
 				<Box id="preview">
 					<Box id="UIXRoot">
+					 	<UIX ref={RootSlot}/>
 					</Box>
 				</Box>
 				<Box id="log">
