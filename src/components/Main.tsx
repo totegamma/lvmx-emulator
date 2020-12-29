@@ -9,19 +9,31 @@ interface NumberDV {
 	[Key: number]: number;
 }
 
+interface UIX_RENDER_PROP {
+	onchange: number;
+	root: UIX;
+}
 
-class UIX extends React.Component {
+function UIX_RENDERER(prop: UIX_RENDER_PROP) {
+	return (
+		<div>
+			{prop.root.render()}
+		</div>
+	)
+}
+
+class UIX {
 
 	strdv: { [key: string]: string; } = {};
 	numdv: { [key: string]: number; } = {};
 
-	constructor(props : any) {
-		super(props)
-	}
+	childs: UIX[] = [];
 
 	render() {
 		return (
-			<div>{this.props.children}</div>
+			<div>
+				{this.childs.map((elem, index) => <div key={index}>{elem.render()}</div>)}
+			</div>
 		)
 	}
 
@@ -33,12 +45,17 @@ class UIX extends React.Component {
 		this.numdv[key] = value;
 	}
 
+
+	addChild(child: UIX) {
+		this.childs.push(child);
+	}
+
 }
 
 class UIX_TEXT extends UIX {
 
-	constructor(props : any) {
-		super(props)
+	constructor() {
+		super()
 		this.strdv["text"] = "testtext"
 	}
 
@@ -46,7 +63,6 @@ class UIX_TEXT extends UIX {
 		return (
 			<div>
 				<div>{this.strdv["text"]}</div>
-				<div>{this.props.children}</div>
 			</div>
 		)
 	}
@@ -72,9 +88,10 @@ export function Main() {
 	let [ST_DV, setST_DV] = useState<NumberDV>({});
 
 	let [REG_DV, setREG_DV] = useState<NumberDV>({});
-
-	let RootSlot = React.createRef<UIX>();
-
+	let [UIXProp, setUIXProp] = useState<UIX_RENDER_PROP>({
+		onchange: 0,
+		root: new UIX()
+	});
 
 	const push = (x : number) => {
 		ST_DV[SP] = x;
@@ -102,13 +119,11 @@ export function Main() {
 		setSP(obj['data'].length);
 		setSTATUS(1);
 
-		/*
-		if (RootSlot.current !== null) {
-			let a = new UIX_TEXT(0);
-			a.setStrDV("text", "HELLO WORLD!");
-			RootSlot.current.addChild(a);
-		}
-		 */
+		let a = new UIX_TEXT();
+		a.setStrDV("text", "HELLO WORLD!");
+		UIXProp.root.addChild(a);
+		UIXProp.onchange = Math.random();
+		setUIXProp(UIXProp);
 
 	}
 
@@ -458,7 +473,7 @@ export function Main() {
 			<Box id="EmulatorView">
 				<Box id="preview">
 					<Box id="UIXRoot">
-					 	<UIX ref={RootSlot}/>
+						<UIX_RENDERER {...UIXProp}/>
 					</Box>
 				</Box>
 				<Box id="log">
@@ -481,7 +496,7 @@ export function Main() {
 					</ButtonGroup>
 				</Box>
 				<Box>
-					{Object.keys(ST_DV).map((key: any) => <ListItem divider><ListItemText primary={String(key) + ": " + String(ST_DV[key])}/></ListItem>)}
+					{Object.keys(ST_DV).map((key: any) => <ListItem key={key} divider><ListItemText primary={String(key) + ": " + String(ST_DV[key])}/></ListItem>)}
 					<List>
 					</List>
 				</Box>
