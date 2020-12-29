@@ -1,17 +1,76 @@
 * {
 	margin: 0;
 	padding: 0;
+	box-sizing: border-box;
 }
 
-.header {
-	color: white;
-	background: darkorange;
+#leftcolumn {
+	float: left;
+	border-right: 1px solid;
+	width: 20%;
+	padding: 10px;
+	height: calc(100vh - 50px);
+}
+
+#centercolumn {
+	float: left;
+	border-right: 1px solid;
+	width: 20%;
+	padding: 10px;
+	height: calc(100vh - 50px);
+}
+
+#rightcolumn {
+	float: left;
+	width: 60%;
+	height: calc(100vh - 50px);
+}
+
+#preview {
+	float: left;
+	clear: both;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	
+	width: 100%;
+	height: calc(100vh - 150px);
+	overflow: scroll;
+}
+
+#log {
+	float: left;
+	clear: both;
+	width: 100%;
+	height: 100px;
+	overflow: scroll;
+	background: black;
+}
+
+#UIXRoot {
+	box-sizing: content-box;
+	color: black;
+	background: white;
+	width: 360px;
+	height: 640px;
+	border: 1px solid black;
+}
+
+#header {
+	color: black;
 	height: 50px;
 }
 
-.body {
-	color: white;
-	background: dimgray;
+#loadbutton {
+	position: absolute;
+	width: calc(20% - 20px);
+	left: 10px;
+	bottom: 20px;
+}
+
+#body {
+	color: black;
 	height: calc(100vh - 50px);
 }
 

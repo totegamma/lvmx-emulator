@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import {Box, Button, ButtonGroup, List, ListItemText, TextField} from '@material-ui/core';
 
 
 interface StringDV {
@@ -372,20 +373,42 @@ export function Main() {
 
 	}
 
+	//{Object.keys(ST_DV).forEach(key => <ListItemText primary={5}/> )}
 
 	return (
-		<div className="body">
-			<ul>
-				<li>PC: {PC}</li>
-				<li>SP: {SP}</li>
-				<li>FP: {FP}</li>
-			</ul>
-			<div>status: {STATUS}</div>
-			<textarea value={bytesInput} onChange={(e) => setBytesInput(e.target.value)} />
-			<button onClick={load}>load</button>
-			<button onClick={tick}>tick</button>
-			<button onClick={start}>start</button>
+		<div id="body">
+			<Box id="leftcolumn">
+				<TextField label="input" variant="outlined" multiline={true} value={bytesInput} onChange={(e) => setBytesInput(e.target.value)}/>
+				<Button id="loadbutton" variant="contained" color="primary" onClick={load}>load</Button>
+			</Box>
 
+			<Box id="centercolumn">
+				<Box>
+					<span>PC: {PC}</span>
+					<span>SP: {SP}</span>
+					<span>FP: {FP}</span>
+					<span>status: {STATUS}</span>
+				</Box>
+				<Box>
+					<ButtonGroup>
+						<Button variant="contained" color="primary" onClick={tick}>tick</Button>
+						<Button variant="contained" color="primary" onClick={start}>start</Button>
+					</ButtonGroup>
+				</Box>
+				<Box>
+					{Object.keys(ST_DV).map((key: any) => <ListItemText primary={String(key) + ": " + String(ST_DV[key])}/>)}
+					<List>
+					</List>
+				</Box>
+			</Box>
+			<Box id="rightcolumn">
+				<Box id="preview">
+					<Box id="UIXRoot">
+					</Box>
+				</Box>
+				<Box id="log">
+				</Box>
+			</Box>
 		</div>
 	);
 };
