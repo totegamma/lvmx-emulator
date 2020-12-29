@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {Box, Button, ButtonGroup, List, ListItemText, TextField} from '@material-ui/core';
+import {Box, Button, ButtonGroup, List, ListItem, ListItemText, TextField} from '@material-ui/core';
 
 
 interface StringDV {
@@ -16,6 +16,7 @@ export function Main() {
 
 	let [STATUS, setSTATUS] = useState(0);
 
+	let [CLOCK, setCLOCK] = useState(0);
 	let [PC, setPC] = useState(0);
 	let [SP, setSP] = useState(0);
 	let [FP, setFP] = useState(0);
@@ -368,9 +369,7 @@ export function Main() {
 				break;
 
 		}
-		console.log(opc + ':' + arg);
-		console.log(ST_DV);
-
+		setCLOCK(++CLOCK);
 	}
 
 	//{Object.keys(ST_DV).forEach(key => <ListItemText primary={5}/> )}
@@ -387,16 +386,17 @@ export function Main() {
 					<span>PC: {PC}</span>
 					<span>SP: {SP}</span>
 					<span>FP: {FP}</span>
+					<span>CLK: {CLOCK}</span>
 					<span>status: {STATUS}</span>
 				</Box>
 				<Box>
-					<ButtonGroup>
+					<ButtonGroup disabled={STATUS===0}>
 						<Button variant="contained" color="primary" onClick={tick}>tick</Button>
 						<Button variant="contained" color="primary" onClick={start}>start</Button>
 					</ButtonGroup>
 				</Box>
 				<Box>
-					{Object.keys(ST_DV).map((key: any) => <ListItemText primary={String(key) + ": " + String(ST_DV[key])}/>)}
+					{Object.keys(ST_DV).map((key: any) => <ListItem divider><ListItemText primary={String(key) + ": " + String(ST_DV[key])}/></ListItem>)}
 					<List>
 					</List>
 				</Box>
