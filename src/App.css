@@ -4,26 +4,25 @@
 	box-sizing: border-box;
 }
 
-#leftcolumn {
+#LoaderView {
 	float: left;
-	border-right: 1px solid;
 	width: 20%;
 	padding: 10px;
-	height: calc(100vh - 50px);
+	height: calc(100vh - 64px);
 }
 
-#centercolumn {
+#ContextView {
 	float: left;
-	border-right: 1px solid;
 	width: 20%;
 	padding: 10px;
-	height: calc(100vh - 50px);
+	height: calc(100vh - 64px);
 }
 
-#rightcolumn {
+#EmulatorView {
 	float: left;
 	width: 60%;
-	height: calc(100vh - 50px);
+	height: calc(100vh - 64px);
+	background: lightgray;
 }
 
 #preview {
@@ -35,7 +34,7 @@
 	align-items: center;
 	
 	width: 100%;
-	height: calc(100vh - 150px);
+	height: calc(100vh - 164px);
 	overflow: scroll;
 }
 
@@ -57,11 +56,6 @@
 	border: 1px solid black;
 }
 
-#header {
-	color: black;
-	height: 50px;
-}
-
 #loadbutton {
 	position: absolute;
 	width: calc(20% - 20px);
@@ -71,6 +65,6 @@
 
 #body {
 	color: black;
-	height: calc(100vh - 50px);
+	height: calc(100vh - 64px);
 }
 

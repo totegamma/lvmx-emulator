@@ -376,12 +376,22 @@ export function Main() {
 
 	return (
 		<div id="body">
-			<Box id="leftcolumn">
+
+			<Box id="LoaderView">
 				<TextField label="input" variant="outlined" multiline={true} value={bytesInput} onChange={(e) => setBytesInput(e.target.value)}/>
 				<Button id="loadbutton" variant="contained" color="primary" onClick={load}>load</Button>
 			</Box>
 
-			<Box id="centercolumn">
+			<Box id="EmulatorView">
+				<Box id="preview">
+					<Box id="UIXRoot">
+					</Box>
+				</Box>
+				<Box id="log">
+				</Box>
+			</Box>
+
+			<Box id="ContextView">
 				<Box>
 					<span>PC: {PC}</span>
 					<span>SP: {SP}</span>
@@ -401,14 +411,7 @@ export function Main() {
 					</List>
 				</Box>
 			</Box>
-			<Box id="rightcolumn">
-				<Box id="preview">
-					<Box id="UIXRoot">
-					</Box>
-				</Box>
-				<Box id="log">
-				</Box>
-			</Box>
+
 		</div>
 	);
 };
