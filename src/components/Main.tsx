@@ -21,6 +21,8 @@ export function Main() {
 	let [SP, setSP] = useState(0);
 	let [FP, setFP] = useState(0);
 
+	let [Log, setLog] = useState("");
+
 	let [OPC_DV, setOPC_DV] = useState<StringDV>({});
 	let [ARG_DV, setARG_DV] = useState<NumberDV>({});
 	let [ST_DV, setST_DV] = useState<NumberDV>({});
@@ -136,6 +138,24 @@ export function Main() {
 
 			case "PUAP":
 				push(FP - arg - 2);
+				setPC(++PC);
+				break;
+
+			case "DUP":
+				bufA = pop();
+				push(bufA);
+				push(bufA);
+				setPC(++PC);
+				break;
+
+			case "PRINT":
+				bufA = pop();
+				var buff = "";
+				var tmp = 0;
+				while ((tmp = ST_DV[bufA++]) !== 0) {
+					buff += String.fromCharCode(tmp);
+				}
+				setLog(Log += buff);
 				setPC(++PC);
 				break;
 
@@ -372,8 +392,6 @@ export function Main() {
 		setCLOCK(++CLOCK);
 	}
 
-	//{Object.keys(ST_DV).forEach(key => <ListItemText primary={5}/> )}
-
 	return (
 		<div id="body">
 
@@ -388,6 +406,7 @@ export function Main() {
 					</Box>
 				</Box>
 				<Box id="log">
+					{Log}
 				</Box>
 			</Box>
 
