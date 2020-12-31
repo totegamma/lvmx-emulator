@@ -34,6 +34,7 @@ export function Main() {
 	let [SLOT_DV, setSLOT_DV] = useState<SlotDV>({});
 
 	let [REG_DV, setREG_DV] = useState<NumberDV>({});
+	let [TIMER, setTIMER] = useState<NodeJS.Timer>();
 	let [UIXProp, setUIXProp] = useState<UIX_RENDER_PROP>({
 		onchange: 0,
 		root: new UIX()
@@ -51,9 +52,9 @@ export function Main() {
 	}
 
 	const start = () => {
-		while (STATUS === 1) {
-			tick();
-		}
+		console.log("start!");
+		let timerId = setInterval(tick, 100);
+		setTIMER(TIMER = timerId);
 	}
 
 	const load = () => {
@@ -65,6 +66,7 @@ export function Main() {
 		setSP(obj['data'].length);
 		setSTATUS(1);
 
+		SLOT_DV[Object.keys(SLOT_DV).length] = UIXProp.root;
 		SLOT_DV[Object.keys(SLOT_DV).length] = UIXProp.root;
 		setSLOT_DV(SLOT_DV);
 	}
@@ -112,7 +114,7 @@ export function Main() {
 
 			case "FRAME":
 				push(FP)
-				setFP(SP - 1);
+				setFP(FP = (SP - 1));
 				for (let i = 0; i < arg; i++) {
 					push(0);
 				}
@@ -147,6 +149,13 @@ export function Main() {
 					push(0);
 					push(0);
 					setSTATUS(STATUS = 0);
+					console.log(TIMER);
+					if (TIMER) {
+						console.log("stop.");
+						clearInterval(TIMER);
+						setTIMER(TIMER);
+					}
+					
 				} else {
 					push(bufA);
 				}

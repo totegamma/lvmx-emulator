@@ -60,3 +60,20 @@ export class UIX_TEXT extends UIX {
 
 }
 
+export class UIX_IMAGE extends UIX {
+
+	constructor() {
+		super()
+		this.strdv["text"] = "testtext"
+	}
+
+	render() {
+		return (
+			<div>
+				<div>{this.strdv["text"]}</div>
+			</div>
+		)
+	}
+
+}
+
