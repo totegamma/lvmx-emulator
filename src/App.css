@@ -52,6 +52,7 @@
 }
 
 #UIXRoot {
+	position: relative;
 	box-sizing: content-box;
 	color: black;
 	background: white;

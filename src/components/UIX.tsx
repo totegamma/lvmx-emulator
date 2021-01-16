@@ -48,6 +48,37 @@ export class UIX {
 
 }
 
+export class UIX_EMPTY extends UIX {
+
+	constructor() {
+		super()
+		this.numdv["Amx"] = 0;
+		this.numdv["Amy"] = 0;
+		this.numdv["AMx"] = 1;
+		this.numdv["AMy"] = 1;
+		this.numdv["Omx"] = 0;
+		this.numdv["Omy"] = 0;
+		this.numdv["OMx"] = 0;
+		this.numdv["OMy"] = 0;
+	};
+
+	render() {
+		return (
+			<div style={{position: 'absolute',
+					width: `calc(100% - ${this.numdv["Omx"] + this.numdv["OMx"]}px - ${(this.numdv["Amx"] + (1-this.numdv["AMx"])) * 100}%)`,
+					height: `calc(100% - ${this.numdv["Omy"] + this.numdv["OMy"]}px - ${(this.numdv["Amy"] + (1-this.numdv["AMy"])) * 100}%)`,
+					left: `calc(${this.numdv["Omx"]}px + ${this.numdv["Amx"] * 100}%)`,
+					bottom: `calc(${this.numdv["Omy"]}px + ${this.numdv["Amy"] * 100}%)`
+			}}>
+				{this.childs.map((elem, index) => <div className="UIempty" key={index}>{elem.render()}</div>)}
+			</div>
+		)
+	}
+
+}
+
+
+
 export class UIX_TEXT extends UIX {
 
 	constructor() {
@@ -87,7 +118,8 @@ export class UIX_IMAGE extends UIX {
 
 	render() {
 		return (
-			<div style={{...this.style, backgroundColor: `rgba(${this.numdv["R"] * 255}, ${this.numdv["G"] * 255}, ${this.numdv["B"] * 255}, ${this.numdv["A"] * 255})`}}>
+			<div style={{...this.style, backgroundColor: `rgba(${this.numdv["R"] * 255},
+					${this.numdv["G"] * 255}, ${this.numdv["B"] * 255}, ${this.numdv["A"] * 255})`}}>
 				{this.childs.map((elem, index) => <div className="UIempty" key={index}>{elem.render()}</div>)}
 			</div>
 		)

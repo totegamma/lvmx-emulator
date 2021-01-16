@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Button, ButtonGroup, List, ListItem, ListItemText, TextField } from '@material-ui/core';
-import { UIX_RENDER_PROP, UIX_RENDERER, UIX, UIX_TEXT, UIX_IMAGE } from './UIX';
+import { UIX_RENDER_PROP, UIX_RENDERER, UIX, UIX_EMPTY, UIX_TEXT, UIX_IMAGE } from './UIX';
 
 interface StringDV {
 	[Key: number]: string;
@@ -492,7 +492,7 @@ export function Main() {
 				let newID = Object.keys(SLOT_DV).length
 				switch (name){
 					case "UIXempty":
-						SLOT_DV[newID] = new UIX();
+						SLOT_DV[newID] = new UIX_EMPTY();
 						break;
 
 					case "UIXtext":
