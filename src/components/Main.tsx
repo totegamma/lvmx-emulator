@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Button, ButtonGroup, List, ListItem, ListItemText, TextField } from '@material-ui/core';
-import { UIX_RENDER_PROP, UIX_RENDERER, UIX, UIX_TEXT } from './UIX';
+import { UIX_RENDER_PROP, UIX_RENDERER, UIX, UIX_TEXT, UIX_IMAGE } from './UIX';
 
 interface StringDV {
 	[Key: number]: string;
@@ -65,6 +65,7 @@ export function Main() {
 		setSP(obj['data'].length);
 		setSTATUS(1);
 
+		SLOT_DV[Object.keys(SLOT_DV).length] = UIXProp.root;
 		SLOT_DV[Object.keys(SLOT_DV).length] = UIXProp.root;
 		SLOT_DV[Object.keys(SLOT_DV).length] = UIXProp.root;
 		setSLOT_DV(SLOT_DV);
@@ -248,6 +249,28 @@ export function Main() {
 				bufA = pop();
 				bufB = pop();
 				ST_DV[bufA] = bufB;
+				++PC;
+				break;
+
+			case "STORED":
+				bufA = pop(); // slot
+				bufB = pop(); // key
+				var data = pop(); // content
+				let key = readNullTermStr(bufB);
+				switch (arg) {
+					case 0:
+					case 1:
+						SLOT_DV[bufA].setNumDV(key, data);
+					break;
+					case 2:
+						let str = readNullTermStr(data);
+						SLOT_DV[bufA].setStrDV(key, str);
+					break;
+					default:
+						setSTATUS(STATUS = 0);
+					break;
+				}
+				UIXProp.onchange = Math.random();
 				++PC;
 				break;
 
@@ -461,28 +484,22 @@ export function Main() {
 			case "WRIDF":
 				break;
 
-			case "WRIDS":
-				bufA = pop(); // slot
-				bufB = pop(); // key
-				let bufC = pop(); // content
-				let key = readNullTermStr(bufB);
-				let data = readNullTermStr(bufC);
-				SLOT_DV[bufA].setStrDV(key, data);
-				UIXProp.onchange = Math.random();
-				++PC;
-				break;
+
 
 			case "CSFT":
 				bufA = pop();
 				let name = readNullTermStr(bufA);
 				let newID = Object.keys(SLOT_DV).length
 				switch (name){
-					case "uix":
+					case "UIXempty":
 						SLOT_DV[newID] = new UIX();
 						break;
 
-					case "uix_text":
+					case "UIXtext":
 						SLOT_DV[newID] = new UIX_TEXT();
+						break;
+					case "UIXimage":
+						SLOT_DV[newID] = new UIX_IMAGE();
 						break;
 					default:
 						Log += "unknown template error!";

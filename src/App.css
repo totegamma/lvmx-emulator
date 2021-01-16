@@ -57,6 +57,7 @@
 	background: white;
 	width: 360px;
 	height: 640px;
+	display: block;
 }
 
 #loadbutton {
@@ -71,3 +72,7 @@
 	height: calc(100vh - 64px);
 }
 
+.UIempty {
+	width: 100%;
+	height: 100%;
+}
