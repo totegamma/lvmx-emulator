@@ -42,18 +42,17 @@ export function Main() {
 
 	const push = (x : number) => {
 		ST_DV[SP] = x;
-		setST_DV(ST_DV);
-		setSP(++SP);
+		++SP;
 	}
 
 	const pop = () : number => {
-		setSP(--SP);
+		--SP;
 		return ST_DV[SP]
 	}
 
 	const start = () => {
 		console.log("start!");
-		let timerId = setInterval(tick, 100);
+		let timerId = setInterval(tick, 20);
 		setTIMER(TIMER = timerId);
 	}
 
@@ -75,13 +74,27 @@ export function Main() {
 		var buff = "";
 		var tmp = 0;
 		while ((tmp = ST_DV[addr++]) !== 0) {
-			buff += String.fromCharCode(tmp);
+			buff += String.fromCharCode(Math.floor(tmp));
 		}
 
 		return buff;
 	}
 
 	const tick = () => {
+		for (var i = 0; i < 15; i++) {
+			if (STATUS !== 0) clock();
+		}
+		setST_DV(ST_DV);
+		setREG_DV(REG_DV);
+		setSLOT_DV(SLOT_DV);
+		setPC(PC);
+		setSP(SP);
+		setFP(FP);
+		setLog(Log);
+		setUIXProp(UIXProp);
+	}
+
+	const clock = () => {
 		var opc = OPC_DV[PC]
 		var arg = ARG_DV[PC]
 
@@ -91,34 +104,34 @@ export function Main() {
 		switch (opc) {
 			case "PUSH":
 				push(arg);
-				setPC(++PC)
+				++PC
 				break;
 
 			case "POP":
 				pop();
-				setPC(++PC)
+				++PC
 				break;
 
 			case "JUMP":
-				setPC(PC = arg)
+				PC = arg
 				break;
 
 			case "JIF0":
 				bufA = pop();
 				if (bufA === 0) {
-					setPC(PC = arg);
+					PC = arg;
 				} else {
-					setPC(++PC);
+					++PC;
 				}
 				break;
 
 			case "FRAME":
 				push(FP)
-				setFP(FP = (SP - 1));
+				FP = (SP - 1);
 				for (let i = 0; i < arg; i++) {
 					push(0);
 				}
-				setPC(++PC);
+				++PC;
 				break;
 
 			case "POPR":
@@ -127,12 +140,12 @@ export function Main() {
 					pop();
 				}
 				push(bufA);
-				setPC(++PC);
+				++PC;
 				break;
 
 			case "CALL":
 				push(++PC);
-				setPC(PC = arg);
+				PC = arg;
 				break;
 
 			case "RET":
@@ -141,15 +154,14 @@ export function Main() {
 				for (let i = 0; i < bufB; i++) {
 					pop();
 				}
-				setFP(FP = pop());
-				setPC(PC = pop());
+				FP = pop();
+				PC = pop();
 
 				if (PC === 0) {
 					pop();
 					push(0);
 					push(0);
 					setSTATUS(STATUS = 0);
-					console.log(TIMER);
 					if (TIMER) {
 						console.log("stop.");
 						clearInterval(TIMER);
@@ -164,96 +176,91 @@ export function Main() {
 
 			case "PULP":
 				push(FP + arg + 1);
-				setPC(++PC);
+				++PC;
 				break;
 
 			case "PUAP":
 				push(FP - arg - 2);
-				setPC(++PC);
+				++PC;
 				break;
 
 			case "DUP":
 				bufA = pop();
 				push(bufA);
 				push(bufA);
-				setPC(++PC);
+				++PC;
 				break;
 
 			case "PRINT":
 				bufA = pop();
 				let buff = readNullTermStr(bufA);
-				setLog(Log += buff);
-				setPC(++PC);
+				Log += buff;
+				++PC;
 				break;
 
 			case "LOADG":
 				push(ST_DV[arg])
-				setPC(++PC);
+				++PC;
 				break;
 
 			case "LOADL":
 				push(ST_DV[FP + arg + 1])
-				setPC(++PC);
+				++PC;
 				break;
 
 			case "LOADA":
 				push(ST_DV[FP - arg - 2])
-				setPC(++PC);
+				++PC;
 				break;
 
 			case "LOADR":
 				push(REG_DV[arg])
-				setPC(++PC);
+				++PC;
 				break;
 
 			case "LOADP":
 				bufA = pop();
 				push(ST_DV[bufA]);
-				setPC(++PC);
+				++PC;
 				break;
 
 			case "STOREG":
 				ST_DV[arg] = pop();
-				setST_DV(ST_DV);
-				setPC(++PC);
+				++PC;
 				break;
 
 			case "STOREL":
 				ST_DV[FP + arg + 1] = pop();
-				setST_DV(ST_DV);
-				setPC(++PC);
+				++PC;
 				break;
 
 			case "STOREA":
 				ST_DV[FP - arg - 2] = pop();
-				setST_DV(ST_DV);
-				setPC(++PC);
+				++PC;
 				break;
 
 			case "STORER":
 				REG_DV[arg] = pop();
-				setREG_DV(REG_DV);
-				setPC(++PC);
+				++PC;
 				break;
 
 			case "STOREP":
 				bufA = pop();
 				bufB = pop();
 				ST_DV[bufA] = bufB;
-				setST_DV(ST_DV);
-				setPC(++PC);
+				++PC;
 				break;
 
 			case "SIN":
 				bufA = pop();
 				push(Math.sin(bufA));
-				setPC(++PC);
+				++PC;
 				break;
 
 			case "COS":
 				bufA = pop();
 				push(Math.cos(bufA));
-				setPC(++PC);
+				++PC;
 				break;
 
 			case "TAN":
@@ -281,134 +288,156 @@ export function Main() {
 				setSTATUS(STATUS = 0);
 				break;
 
-			case "ADDU":
+			case "INV":
+				bufA = pop();
+				push(bufA ? 0 : 1);
+				++PC;
+				break;
+
+			case "INC":
+				bufA = pop();
+				push(bufA + 1);
+				++PC;
+				break;
+
+			case "DEC":
+				bufA = pop();
+				push(bufA - 1);
+				++PC;
+				break;
+
 			case "ADDI":
 			case "ADDF":
 				bufA = pop();
 				bufB = pop();
 				push(bufA + bufB);
-				setPC(++PC);
+				++PC;
 				break;
 
-			case "SUBU":
 			case "SUBI":
 			case "SUBF":
 				bufA = pop();
 				bufB = pop();
 				push(bufA - bufB);
-				setPC(++PC);
+				++PC;
 				break;
 
-			case "MULU":
 			case "MULI":
 			case "MULF":
 				bufA = pop();
 				bufB = pop();
 				push(bufA * bufB);
-				setPC(++PC);
+				++PC;
 				break;
 
-			case "DIVU":
 			case "DIVI":
 			case "DIVF":
 				bufA = pop();
 				bufB = pop();
 				push(bufA / bufB);
-				setPC(++PC);
+				++PC;
 				break;
 
-			case "MODU":
 			case "MODI":
 			case "MODF":
 				bufA = pop();
 				bufB = pop();
 				push(bufA % bufB);
-				setPC(++PC);
+				++PC;
 				break;
 
-			case "LTU":
+			case "AND":
+				bufA = pop();
+				bufB = pop();
+				push((bufA===1) && (bufB===1) ? 1 : 0);
+				++PC;
+				break;
+
+			case "OR":
+				bufA = pop();
+				bufB = pop();
+				push((bufA===1) || (bufB===1) ? 1 : 0);
+				++PC;
+				break;
+
+
 			case "LTI":
 			case "LTF":
 				bufA = pop();
 				bufB = pop();
 				push(bufA < bufB ? 1 : 0);
-				setPC(++PC);
+				++PC;
 				break;
 
-			case "LTEU":
 			case "LTEI":
 			case "LTEF":
 				bufA = pop();
 				bufB = pop();
-				push(bufA < bufB ? 1 : 0);
-				setPC(++PC);
+				push(bufA <= bufB ? 1 : 0);
+				++PC;
 				break;
 
-			case "GTU":
 			case "GTI":
 			case "GTF":
 				bufA = pop();
 				bufB = pop();
-				push(bufA < bufB ? 1 : 0);
-				setPC(++PC);
+				push(bufA > bufB ? 1 : 0);
+				++PC;
 				break;
 
-			case "GTEU":
 			case "GTEI":
 			case "GTEF":
 				bufA = pop();
 				bufB = pop();
-				push(bufA < bufB ? 1 : 0);
-				setPC(++PC);
+				push(bufA >= bufB ? 1 : 0);
+				++PC;
 				break;
 
-			case "EQU":
 			case "EQI":
 			case "EQF":
 				bufA = pop();
 				bufB = pop();
-				push(bufA < bufB ? 1 : 0);
-				setPC(++PC);
+				push(bufA === bufB ? 1 : 0);
+				++PC;
 				break;
 
-			case "NEQU":
 			case "NEQI":
 			case "NEQF":
 				bufA = pop();
 				bufB = pop();
-				push(bufA < bufB ? 1 : 0);
-				setPC(++PC);
+				push(bufA !== bufB ? 1 : 0);
+				++PC;
 				break;
 
 
 			case "UTOI":
-				setPC(++PC);
+				++PC;
 				break;
 
 			case "UTOF":
-				setPC(++PC);
+				++PC;
 				break;
 
 			case "ITOF":
-				setPC(++PC);
+				++PC;
 				break;
 
 			case "ITOU":
 				bufA = pop();
 				push(Math.abs(bufA));
-				setPC(++PC);
+				++PC;
 				break;
 
 			case "FTOU":
 				bufA = pop();
 				push(Math.floor(bufA));
-				setPC(++PC);
+				++PC;
 				break;
 
 			case "FTOI":
 				bufA = pop();
 				push(Math.floor(bufA));
-				setPC(++PC);
+				++PC;
 				break;
 
 			case "REDDU":
@@ -440,8 +469,7 @@ export function Main() {
 				let data = readNullTermStr(bufC);
 				SLOT_DV[bufA].setStrDV(key, data);
 				UIXProp.onchange = Math.random();
-				setUIXProp(UIXProp);
-				setPC(++PC);
+				++PC;
 				break;
 
 			case "CSFT":
@@ -457,13 +485,12 @@ export function Main() {
 						SLOT_DV[newID] = new UIX_TEXT();
 						break;
 					default:
-						setLog(Log += "unknown template error!");
+						Log += "unknown template error!";
 						newID = -1;
 						break;
 					}
-				setSLOT_DV(SLOT_DV);
 				push(newID);
-				setPC(++PC);
+				++PC;
 				break;
 
 			case "SSPA":
@@ -471,8 +498,7 @@ export function Main() {
 				bufB = pop();
 				SLOT_DV[bufB].addChild(SLOT_DV[bufA])
 				UIXProp.onchange = Math.random();
-				setUIXProp(UIXProp);
-				setPC(++PC);
+				++PC;
 				break;
 
 			case "DS":
@@ -480,6 +506,7 @@ export function Main() {
 
 
 			default:
+				console.log(opc);
 				setSTATUS(0);
 				break;
 
@@ -523,7 +550,7 @@ export function Main() {
 					</ButtonGroup>
 				</Box>
 				<Box>
-					{Object.keys(ST_DV).map((key: any) => <ListItem key={key} divider><ListItemText primary={String(key) + ": " + String(ST_DV[key])}/></ListItem>)}
+					{Object.keys(ST_DV).filter((elem: any, index: number) => index < SP).map((key: any) => <ListItem key={key} divider><ListItemText primary={String(key) + ": " + String(ST_DV[key])}/></ListItem>)}
 					<List>
 					</List>
 				</Box>
