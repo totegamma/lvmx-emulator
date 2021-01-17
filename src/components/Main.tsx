@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Button, ButtonGroup, List, ListItem, ListItemText, TextField } from '@material-ui/core';
-import { UIX_RENDER_PROP, UIX_RENDERER, UIX, UIX_EMPTY, UIX_TEXT, UIX_IMAGE } from './UIX';
+import { UIX_RENDER_PROP, UIX_RENDERER, UIX, UIX_EMPTY, UIX_TEXT, UIX_IMAGE, UIX_BUTTON } from './UIX';
 
 interface StringDV {
 	[Key: number]: string;
@@ -77,8 +77,14 @@ export function Main() {
 		while ((tmp = ST_DV[addr++]) !== 0) {
 			buff += String.fromCharCode(Math.floor(tmp));
 		}
-
 		return buff;
+	}
+
+	const writeNullTermStr = (addr : number, str : string) => {
+		for (var i = 0; i < str.length; i++) {
+			ST_DV[i + addr] = str.charCodeAt(i);
+		}
+		ST_DV[i+str.length] = 0;
 	}
 
 	const tick = () => {
@@ -93,6 +99,7 @@ export function Main() {
 		setFP(FP);
 		setLog(Log);
 		setUIXProp(UIXProp);
+		setCLOCK(CLOCK);
 	}
 
 	const clock = () => {
@@ -101,6 +108,7 @@ export function Main() {
 
 		var bufA;
 		var bufB;
+		var bufC;
 
 		switch (opc) {
 			case "PUSH":
@@ -222,6 +230,30 @@ export function Main() {
 			case "LOADP":
 				bufA = pop();
 				push(ST_DV[bufA]);
+				++PC;
+				break;
+
+			case "LOADD":
+				bufA = pop(); // slot
+				bufB = pop(); // key
+				bufC = readNullTermStr(bufB); // keystring
+				switch (arg) {
+					case 0:
+						push(Math.floor(SLOT_DV[bufA].getNumDV(bufC)));
+						break;
+					case 1:
+						push(SLOT_DV[bufA].getNumDV(bufC));
+					break;
+					case 2:
+						let dest = pop(); // dest
+						let str = SLOT_DV[bufA].getStrDV(bufC);
+						writeNullTermStr(dest, str);
+					break;
+					default:
+						setSTATUS(STATUS = 0);
+					break;
+				}
+				UIXProp.onchange = Math.random();
 				++PC;
 				break;
 
@@ -494,12 +526,14 @@ export function Main() {
 					case "UIXempty":
 						SLOT_DV[newID] = new UIX_EMPTY();
 						break;
-
 					case "UIXtext":
 						SLOT_DV[newID] = new UIX_TEXT();
 						break;
 					case "UIXimage":
 						SLOT_DV[newID] = new UIX_IMAGE();
+						break;
+					case "UIXbutton":
+						SLOT_DV[newID] = new UIX_BUTTON();
 						break;
 					default:
 						Log += "unknown template error!";
@@ -528,9 +562,9 @@ export function Main() {
 				break;
 
 		}
-		console.log(opc + ':' + arg);
-		console.log(ST_DV);
-		setCLOCK(++CLOCK);
+		//console.log(opc + ':' + arg);
+		//console.log(ST_DV);
+		++CLOCK;
 	}
 
 	return (

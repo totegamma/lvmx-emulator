@@ -41,6 +41,14 @@ export class UIX {
 		this.numdv[key] = value;
 	}
 
+	getStrDV(key: string) {
+		return this.strdv[key];
+	}
+
+	getNumDV(key: string) {
+		return this.numdv[key];
+	}
+
 
 	addChild(child: UIX) {
 		this.childs.push(child);
@@ -120,6 +128,32 @@ export class UIX_IMAGE extends UIX {
 		return (
 			<div style={{...this.style, backgroundColor: `rgba(${this.numdv["R"] * 255},
 					${this.numdv["G"] * 255}, ${this.numdv["B"] * 255}, ${this.numdv["A"] * 255})`}}>
+				{this.childs.map((elem, index) => <div className="UIempty" key={index}>{elem.render()}</div>)}
+			</div>
+		)
+	}
+
+}
+
+export class UIX_BUTTON extends UIX {
+
+	constructor() {
+		super()
+		this.numdv["pressed"] = 0;
+	}
+
+	style = {
+		width: '100%',
+		height: '100%',
+	}
+
+	click = () => {
+		this.numdv["pressed"] = 1;
+	}
+
+	render() {
+		return (
+			<div style={this.style} onClick={this.click}>
 				{this.childs.map((elem, index) => <div className="UIempty" key={index}>{elem.render()}</div>)}
 			</div>
 		)
