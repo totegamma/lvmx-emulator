@@ -465,27 +465,7 @@ export function Main() {
 				break;
 
 
-			case "UTOI":
-				++PC;
-				break;
-
-			case "UTOF":
-				++PC;
-				break;
-
 			case "ITOF":
-				++PC;
-				break;
-
-			case "ITOU":
-				bufA = pop();
-				push(Math.abs(bufA));
-				++PC;
-				break;
-
-			case "FTOU":
-				bufA = pop();
-				push(Math.floor(bufA));
 				++PC;
 				break;
 
@@ -495,28 +475,45 @@ export function Main() {
 				++PC;
 				break;
 
-			case "REDDU":
+			case "SLEN":
+				bufA = pop();
+				bufC = readNullTermStr(bufA);
+				push(bufC.length);
+				++PC;
 				break;
 
-			case "REDDI":
+			case "STOI":
+				bufA = pop();
+				bufC = readNullTermStr(bufA);
+				push(parseInt(bufC));
+				++PC;
 				break;
 
-			case "REDDF":
+			case "STOF":
+				bufA = pop();
+				bufC = readNullTermStr(bufA);
+				push(parseFloat(bufC));
+				++PC;
 				break;
 
-			case "REDDS":
+			case "SCMP":
 				break;
 
-			case "WRIDU":
+			case "ITOS":
+				bufA = pop(); // input
+				bufB = pop(); // dest
+				bufC = String(bufA);
+				writeNullTermStr(bufB, bufC);
+				++PC;
 				break;
 
-			case "WRIDI":
+			case "FOTS":
+				bufA = pop(); // input
+				bufB = pop(); // dest
+				bufC = String(bufA);
+				writeNullTermStr(bufB, bufC);
+				++PC;
 				break;
-
-			case "WRIDF":
-				break;
-
-
 
 			case "CSFT":
 				bufA = pop();
