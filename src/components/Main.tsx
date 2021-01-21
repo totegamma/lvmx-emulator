@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Button, ButtonGroup, List, ListItem, ListItemText, TextField } from '@material-ui/core';
-import { UIX_RENDER_PROP, UIX_RENDERER, UIX, UIX_EMPTY, UIX_TEXT, UIX_IMAGE, UIX_BUTTON } from './UIX';
+import { UIX_RENDER_PROP, UIX_RENDERER, UIX, UIX_EMPTY, UIX_TEXT, UIX_IMAGE, UIX_BUTTON, UIX_VERTICAL_LAYOUT, UIX_HORIZONTAL_LAYOUT } from './UIX';
 
 interface StringDV {
 	[Key: number]: string;
@@ -518,7 +518,7 @@ export function Main() {
 			case "CSFT":
 				bufA = pop();
 				let name = readNullTermStr(bufA);
-				let newID = Object.keys(SLOT_DV).length
+				let newID = Object.keys(SLOT_DV).length;
 				switch (name){
 					case "UIXempty":
 						SLOT_DV[newID] = new UIX_EMPTY();
@@ -531,6 +531,12 @@ export function Main() {
 						break;
 					case "UIXbutton":
 						SLOT_DV[newID] = new UIX_BUTTON();
+						break;
+					case "UIXlayoutV":
+						SLOT_DV[newID] = new UIX_VERTICAL_LAYOUT();
+						break;
+					case "UIXlayoutH":
+						SLOT_DV[newID] = new UIX_HORIZONTAL_LAYOUT();
 						break;
 					default:
 						Log += "unknown template error!";
@@ -546,6 +552,14 @@ export function Main() {
 				bufB = pop();
 				SLOT_DV[bufB].addChild(SLOT_DV[bufA])
 				UIXProp.onchange = Math.random();
+				++PC;
+				break;
+
+			case "DUPS":
+				bufA = pop();
+				bufB = Object.keys(SLOT_DV).length;
+				SLOT_DV[bufB] = SLOT_DV[bufA].DUP();
+				push(bufB);
 				++PC;
 				break;
 
