@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Button, ButtonGroup, List, ListItem, ListItemText, TextField } from '@material-ui/core';
+import { Box, Button, ButtonGroup, List, ListItem, ListItemText, TextField, Input } from '@material-ui/core';
 import { UIX_RENDER_PROP, UIX_RENDERER, UIX, UIX_EMPTY, UIX_TEXT, UIX_IMAGE, UIX_BUTTON, UIX_VERTICAL_LAYOUT, UIX_HORIZONTAL_LAYOUT } from './UIX';
 
 interface StringDV {
@@ -16,7 +16,7 @@ interface SlotDV {
 
 export function Main() {
 
-	const [bytesInput, setBytesInput] = useState("");
+	let fileReader : any;
 
 	let [STATUS, setSTATUS] = useState(0);
 
@@ -57,7 +57,7 @@ export function Main() {
 	}
 
 	const load = () => {
-		const obj = JSON.parse(bytesInput);
+		const obj = JSON.parse(fileReader.result);
 		setOPC_DV(obj['code'].map((e : any) => e['opc']));
 		setARG_DV(obj['code'].map((e : any) => e['arg']));
 		setST_DV(obj['data'])
@@ -578,11 +578,17 @@ export function Main() {
 		++CLOCK;
 	}
 
+	const handleFileChosen = (file: any) => {
+		fileReader = new FileReader();
+		fileReader.readAsText(file);
+	};
+
 	return (
 		<div id="body">
 
 			<Box id="LoaderView">
-				<TextField label="input" variant="outlined" multiline={true} value={bytesInput} onChange={(e) => setBytesInput(e.target.value)}/>
+				実行ファイル(Json)
+				<Input type="file" id="file" onChange={(e: any)=>handleFileChosen(e.target.files[0])}/>
 				<Button id="loadbutton" variant="contained" color="primary" onClick={load}>load</Button>
 			</Box>
 
