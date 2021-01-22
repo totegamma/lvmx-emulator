@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Button, ButtonGroup, List, ListItem, ListItemText, TextField, Input } from '@material-ui/core';
+import { Box, Button, ButtonGroup, Input } from '@material-ui/core';
 import { UIX_RENDER_PROP, UIX_RENDERER, UIX, UIX_EMPTY, UIX_TEXT, UIX_IMAGE, UIX_BUTTON, UIX_VERTICAL_LAYOUT, UIX_HORIZONTAL_LAYOUT } from './UIX';
 
 interface StringDV {
@@ -617,13 +617,7 @@ export function Main() {
 						<Button variant="contained" color="primary" onClick={start}>start</Button>
 					</ButtonGroup>
 				</Box>
-				<Box>
-					{Object.keys(ST_DV).filter((elem: any, index: number) => index < SP).map((key: any) => <ListItem key={key} divider><ListItemText primary={String(key) + ": " + String(ST_DV[key])}/></ListItem>)}
-					<List>
-					</List>
-				</Box>
 			</Box>
-
 		</div>
 	);
 };
