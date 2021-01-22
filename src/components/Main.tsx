@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
-import { Box, Button, ButtonGroup, Input } from '@material-ui/core';
+import {AppBar, Typography} from '@material-ui/core';
+import { Box, Button, ButtonGroup, Toolbar, Input } from '@material-ui/core';
 import { UIX_RENDER_PROP, UIX_RENDERER, UIX, UIX_EMPTY, UIX_TEXT, UIX_IMAGE, UIX_BUTTON, UIX_VERTICAL_LAYOUT, UIX_HORIZONTAL_LAYOUT } from './UIX';
+
+import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import ExposurePlus1Icon from '@material-ui/icons/ExposurePlus1';
+import PauseIcon from '@material-ui/icons/Pause';
 
 interface StringDV {
 	[Key: number]: string;
@@ -52,8 +57,16 @@ export function Main() {
 
 	const start = () => {
 		console.log("start!");
-		let timerId = setInterval(tick, 20);
+		let timerId = setInterval(tick, 33);
 		setTIMER(TIMER = timerId);
+	}
+
+	const pause = () => {
+		if (TIMER) {
+			console.log("stop.");
+			clearInterval(TIMER);
+			setTIMER(TIMER);
+		}
 	}
 
 	const load = () => {
@@ -85,6 +98,21 @@ export function Main() {
 			ST_DV[i + addr] = str.charCodeAt(i);
 		}
 		ST_DV[i+str.length] = 0;
+	}
+
+	const tick1 = () => {
+		console.log(OPC_DV[PC] + ':' + ARG_DV[PC]);
+		if (STATUS !== 0) clock();
+		setST_DV(ST_DV);
+		setREG_DV(REG_DV);
+		setSLOT_DV(SLOT_DV);
+		setPC(PC);
+		setSP(SP);
+		setFP(FP);
+		setLog(Log);
+		setUIXProp(UIXProp);
+		setCLOCK(CLOCK);
+		console.log(ST_DV);
 	}
 
 	const tick = () => {
@@ -573,8 +601,7 @@ export function Main() {
 				break;
 
 		}
-		//console.log(opc + ':' + arg);
-		//console.log(ST_DV);
+
 		++CLOCK;
 	}
 
@@ -584,41 +611,60 @@ export function Main() {
 	};
 
 	return (
-		<div id="body">
+		<>
+		<AppBar position="static">
+			<Toolbar>
+				<Box style={{"width": "100%"}}>
+					<Typography variant="h6">
+						LVMX Emulator
+					</Typography>
+				</Box>
+				<ButtonGroup disabled={STATUS===0}>
+					<Button variant="contained" onClick={pause}> <PauseIcon/> </Button>
+					<Button variant="contained" onClick={tick1}> <ExposurePlus1Icon/> </Button>
+					<Button variant="contained" onClick={start}> <PlayArrowIcon/> </Button>
+				</ButtonGroup>
+				<Box style={{"width": "100%"}}>
+				</Box>
+			</Toolbar>
+		</AppBar>
+		<div id="wrap">
+			<div id="body">
 
-			<Box id="LoaderView">
-				実行ファイル(Json)
-				<Input type="file" id="file" onChange={(e: any)=>handleFileChosen(e.target.files[0])}/>
-				<Button id="loadbutton" variant="contained" color="primary" onClick={load}>load</Button>
-			</Box>
+				<Box id="LoaderView">
+					実行ファイル(Json)
+					<Input type="file" id="file" onChange={(e: any)=>handleFileChosen(e.target.files[0])}/>
+					<Button id="loadbutton" variant="contained" color="primary" onClick={load}>load</Button>
+				</Box>
 
-			<Box id="EmulatorView">
-				<Box id="preview">
-					<Box id="UIXRoot">
-						<UIX_RENDERER {...UIXProp}/>
+				<Box id="EmulatorView">
+					<Box id="preview">
+						<Box id="UIXRoot">
+							<UIX_RENDERER {...UIXProp}/>
+						</Box>
+					</Box>
+					<Box id="log">
+						{Log}
 					</Box>
 				</Box>
-				<Box id="log">
-					{Log}
-				</Box>
-			</Box>
 
-			<Box id="ContextView">
-				<Box>
-					<span>PC: {PC}</span>
-					<span>SP: {SP}</span>
-					<span>FP: {FP}</span>
-					<span>CLK: {CLOCK}</span>
-					<span>status: {STATUS}</span>
+				<Box id="ContextView">
+					<Box>
+						<ul>
+						<li>PC: {PC}</li>
+						<li>SP: {SP}</li>
+						<li>FP: {FP}</li>
+						<li>CLK: {CLOCK}</li>
+						<li>status: {STATUS}</li>
+						</ul>
+					</Box>
+					<Box>
+
+					</Box>
 				</Box>
-				<Box>
-					<ButtonGroup disabled={STATUS===0}>
-						<Button variant="contained" color="primary" onClick={tick}>tick</Button>
-						<Button variant="contained" color="primary" onClick={start}>start</Button>
-					</ButtonGroup>
-				</Box>
-			</Box>
+			</div>
 		</div>
+		</>
 	);
 };
 
