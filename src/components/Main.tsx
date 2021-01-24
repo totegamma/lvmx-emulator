@@ -97,7 +97,7 @@ export function Main() {
 		for (var i = 0; i < str.length; i++) {
 			ST_DV[i + addr] = str.charCodeAt(i);
 		}
-		ST_DV[i+str.length] = 0;
+		ST_DV[str.length + addr] = 0;
 	}
 
 	const tick1 = () => {
@@ -535,7 +535,7 @@ export function Main() {
 				++PC;
 				break;
 
-			case "FOTS":
+			case "FTOS":
 				bufA = pop(); // input
 				bufB = pop(); // dest
 				bufC = String(bufA);
