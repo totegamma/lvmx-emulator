@@ -525,6 +525,20 @@ export function Main() {
 				break;
 
 			case "SCMP":
+				bufA = pop();
+				bufB = pop();
+				let strA = readNullTermStr(bufA);
+				let strB = readNullTermStr(bufB);
+				push(strA === strB ? 1 : 0);
+				++PC;
+				break;
+
+			case "SCPY":
+				bufA = pop();
+				bufB = pop();
+				bufC = readNullTermStr(bufB);
+				writeNullTermStr(bufA, bufC);
+				++PC;
 				break;
 
 			case "ITOS":
@@ -583,16 +597,31 @@ export function Main() {
 				++PC;
 				break;
 
-			case "DUPS":
+
+
+			case "SLUS":
 				bufA = pop();
-				bufB = Object.keys(SLOT_DV).length;
-				SLOT_DV[bufB] = SLOT_DV[bufA].DUP();
-				push(bufB);
+
+				switch (arg) {
+					case 0: // get slot parent
+						setSTATUS(STATUS = 0);
+						break;
+					case 1: // duplicate slot
+						bufB = Object.keys(SLOT_DV).length;
+						SLOT_DV[bufB] = SLOT_DV[bufA].DUP();
+						push(bufB);
+						break;
+					case 2: // children count
+						setSTATUS(STATUS = 0);
+						break;
+					default:
+						setSTATUS(STATUS = 0);
+					break;
+				}
 				++PC;
 				break;
 
-			case "DS":
-				break;
+			//case "DESS":
 
 
 			default:

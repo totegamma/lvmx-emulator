@@ -116,6 +116,10 @@ export class UIX_TEXT extends UIX {
 	constructor() {
 		super()
 		this.strdv["content"] = ""
+		this.numdv["R"] = 1;
+		this.numdv["G"] = 1;
+		this.numdv["B"] = 1;
+		this.numdv["A"] = 1;
 	}
 
 	style = {
@@ -133,7 +137,8 @@ export class UIX_TEXT extends UIX {
 
 	render() {
 		return (
-			<div style={this.style}>
+			<div style={{...this.style, color: `rgba(${this.numdv["R"] * 255},
+					${this.numdv["G"] * 255}, ${this.numdv["B"] * 255}, ${this.numdv["A"] * 255})`}}>
 				<div>{this.strdv["content"]}</div>
 			</div>
 		)
